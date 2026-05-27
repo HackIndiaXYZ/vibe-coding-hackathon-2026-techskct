@@ -1,0 +1,83 @@
+ARJUN MEHTA
+Full Stack Developer | React • Node.js • TypeScript
+📧 arjun.mehta@email.com | 📱 +91-9876543210 | 📍 Bengaluru, India
+🔗 github.com/arjunmehta | 💼 linkedin.com/in/arjunmehta | 🌐 arjunmehta.dev
+
+PROFESSIONAL SUMMARY
+Passionate full-stack developer with 4+ years of experience building scalable web applications using modern JavaScript frameworks. Proven track record of delivering high-performance solutions that improve user experience and reduce system latency. Expertise in both frontend and backend development with strong problem-solving skills.
+
+TECHNICAL SKILLS
+Primary: React, Node.js, TypeScript, PostgreSQL, JavaScript (ES6+), REST APIs
+Secondary: Docker, AWS, Redis, GraphQL, Express.js, Next.js
+Tools & Platforms: VSCode, GitHub, Figma, Postman, GitHub Actions, Vercel, Datadog
+Currently Learning: Rust, Web3, Kubernetes
+
+PROFESSIONAL EXPERIENCE
+
+Software Engineer | Infosys (Bengaluru, India)
+Jan 2022 – Present | Full-time
+• Architected and built microservices for banking clients using Node.js and PostgreSQL, reducing API latency by 40% through query optimization
+• Led development of real-time data processing pipeline handling 1M+ requests/day
+• Mentored 3 junior developers on best practices and code reviews
+• Technologies: Node.js, PostgreSQL, Docker, AWS Lambda, React
+
+Frontend Developer | TechStartup Inc. (Remote)
+Mar 2021 – Dec 2021 | Full-time
+• Developed React-based dashboard used by 10K+ daily active users
+• Implemented real-time notifications using WebSockets achieving <100ms latency
+• Improved Lighthouse performance score from 65 to 92
+• Technologies: React, Redux, Tailwind CSS, Firebase
+
+Frontend Developer Intern | CreativeAgency (Bengaluru, India)
+Jun 2020 – Feb 2021 | Internship
+• Built responsive UI components following Figma designs
+• Contributed to open-source React component library with 500+ GitHub stars
+• Fixed 50+ bugs and optimized bundle size by 35%
+
+FEATURED PROJECTS
+
+TaskFlow - Project Management App with AI
+Personal Project | github.com/arjunmehta/taskflow | taskflow.vercel.app
+Trello-like project management application with AI-powered task prioritization. Supports teams up to 50 users with real-time collaboration, real-time WebSocket updates, and Stripe payments.
+★ 312 Stars on GitHub
+Technologies: React, Node.js, Socket.io, OpenAI API, MongoDB, Stripe
+Status: Live
+Achievements: Featured in ProductHunt (trending #5), 5K+ users, 95% uptime SLA
+
+PriceWatch - E-commerce Price Tracker
+github.com/arjunmehta/pricewatch | pricewatch.in
+Tracks prices across Amazon, Flipkart, Meesho with WhatsApp/email alerts when prices drop. Integrated with Twilio for SMS notifications.
+Technologies: Python, BeautifulSoup, FastAPI, Twilio, PostgreSQL, React
+Status: Live
+Achievements: 2K+ users, ₹5L+ GMV tracked, 99.5% notification delivery rate
+
+CodeSnap - Code Screenshot Generator
+github.com/arjunmehta/codesnap | codesnap.io
+Beautiful code screenshot tool for social media with 15+ themes, custom backgrounds, export as PNG/SVG. Built with Next.js Canvas API.
+Technologies: Next.js, Tailwind CSS, Canvas API, Cloudinary
+Status: Live
+Achievements: ★ 541 GitHub stars, 50K+ monthly users, featured on Hacker News
+
+Climate Dashboard - Real-time Weather Analytics
+github.com/arjunmehta/climate-dash
+Real-time weather data visualization dashboard with 72-hour forecasts and historical trends.
+Technologies: Next.js, D3.js, PostgreSQL, OpenWeather API
+Status: Completed
+
+EDUCATION
+
+B.Tech Computer Science & Engineering
+VIT University (Vellore, India)
+2018 – 2022 | CGPA: 8.7/10.0 (First Class with Distinction)
+
+CERTIFICATIONS & ACHIEVEMENTS
+✓ AWS Solutions Architect Associate (Amazon, 2023)
+✓ Meta React Developer Certificate (Coursera, 2022)
+✓ Advanced TypeScript Mastery (Udemy, 2023)
+✓ Hackathon Winner - TechCrunch Disrupt India 2021
+✓ Open Source Contributor - 50+ merged pull requests
+
+ADDITIONAL INFO
+Languages: English (Fluent), Hindi (Fluent), Marathi (Basic)
+Open to: Full-time Remote, Relocation to tech hubs
+Availability: 2 weeks notice

@@ -1,0 +1,104 @@
+VIKRAM SHARMA
+ML Engineer & Data Scientist | PyTorch • Python • TensorFlow • NLP
+📧 vikram.sharma@email.com | 📱 +91-7654321098 | 📍 Hyderabad, India
+🔗 github.com/vikramsharma | 📊 kaggle.com/vikramsharma | 💼 linkedin.com/in/vikramsharma
+
+PROFESSIONAL SUMMARY
+Data scientist and ML engineer with 4+ years building production-grade AI/ML systems. Expert in NLP, computer vision, and time-series forecasting. Published researcher with multiple papers. Experienced in deploying models at scale serving millions of users. Strong foundation in both research and engineering.
+
+TECHNICAL SKILLS
+ML/AI: PyTorch, TensorFlow, Scikit-learn, XGBoost, LightGBM, Hugging Face, LangChain, OpenAI
+Languages: Python, SQL, R, Bash
+MLOps: MLflow, Weights & Biases, DVC, Model Registry, Docker, Kubernetes
+Data: Pandas, NumPy, Spark, SQL, Feature Engineering, A/B Testing
+Tools: Jupyter, Git, AWS SageMaker, Azure ML, Airflow, Streamlit
+
+PROFESSIONAL EXPERIENCE
+
+ML Engineer II | Microsoft (Hyderabad, India)
+Jul 2022 – Present | Full-time
+• Built NLP pipelines for Azure Cognitive Services processing 1M+ daily requests
+• Deployed multilingual sentiment analysis model achieving 95.2% accuracy across 12 languages
+• Optimized model inference latency from 500ms to 50ms using quantization and caching
+• Led team of 3 engineers on document classification project generating $500K+ ARR
+• Mentored 2 junior ML engineers on best practices
+• Technologies: PyTorch, Transformers, Azure ML, Docker, FastAPI
+
+Data Scientist | Analytics Startup (Bangalore, India)
+Feb 2021 – Jun 2022 | Full-time
+• Built customer churn prediction model (XGBoost) achieving 89% AUC
+• Created end-to-end ML pipeline with feature engineering, training, and deployment
+• Built Streamlit dashboard for business stakeholders with SHAP explanations
+• Increased model prediction accuracy by 12% through feature optimization
+• Technologies: Python, XGBoost, Scikit-learn, Streamlit, Airflow, PostgreSQL
+
+ML Intern | AI Research Lab (Remote)
+Jun 2020 – Jan 2021 | Internship
+• Implemented BERT-based text classification achieving state-of-the-art results
+• Published 2 research papers on NLP optimization techniques
+• Contributed to open-source transformer library with 2K+ GitHub stars
+
+RESEARCH & PUBLICATIONS
+📄 "Efficient Multilingual NLP: A Comprehensive Study" - Published in NeurIPS 2023
+📄 "Optimizing Transformer Models for Edge Devices" - Published in ICML 2023
+📄 "Sentiment Analysis Under Domain Shift: Challenges and Solutions" - ArXiv 2023
+
+FEATURED PROJECTS & ACHIEVEMENTS
+
+SentimentAPI - Multilingual Sentiment Analysis REST API
+github.com/vikramsharma/sentimentapi | sentimentapi.dev
+Production-ready sentiment analysis API supporting 12 languages. Fine-tuned mBERT on 500K+ manual annotations with 95.2% accuracy. Serves 100K+ requests/day.
+★ 728 GitHub Stars
+Technologies: Python, Transformers, FastAPI, Docker, Redis, PostgreSQL
+Status: Live with 100K+ daily active users
+Achievements: 99.9% uptime, <200ms p99 latency
+
+ChurnPredict - Customer Churn Prediction Suite
+github.com/vikramsharma/churnpredict | churnpredict.streamlit.app
+End-to-end ML pipeline for SaaS customer churn prediction. Includes feature engineering, XGBoost model, SHAP explanations, and interactive Streamlit dashboard.
+★ 214 GitHub Stars
+Technologies: Python, XGBoost, SHAP, Streamlit, MLflow, Pandas
+Status: Live
+Achievements: ★214 stars, 95K+ visits, featured in Towards Data Science
+
+ImageClassifier - Custom Vision Model Library
+github.com/vikramsharma/imageclassifier
+PyTorch library for building and deploying custom computer vision models with transfer learning. Includes pre-trained weights, data augmentation pipeline, and quantization support.
+★ 156 GitHub Stars
+Technologies: PyTorch, torchvision, ONNX
+Status: Live
+
+TimeSeriesForecasting - LSTM-based Forecasting Framework
+github.com/vikramsharma/timeseries
+Production-grade LSTM framework for time-series forecasting with multivariate support, attention mechanism, and uncertainty quantification.
+Technologies: PyTorch, Lightning, Optuna
+Status: Completed with documentation
+
+EDUCATION
+
+M.Tech Artificial Intelligence
+IIT Bombay (Mumbai, India)
+2020 – 2022 | CGPA: 9.1/10.0 (First Class)
+Thesis: "Efficient NLP Models for Resource-Constrained Environments"
+
+B.E. Computer Science & Engineering
+BITS Pilani (Hyderabad, India)
+2016 – 2020 | CGPA: 8.4/10.0 (First Class)
+
+COMPETITIONS & RANKINGS
+🥇 Kaggle Grandmaster (Rating: 3,500+)
+🥈 Kaggle Competition Expert (Rank: Top 5%)
+🏆 Kaggle Dataset Expert (10+ popular datasets)
+🥇 NeurIPS ML Competition - 2nd Place (2023)
+🥈 Data Science Bowl - Top 10 (2022)
+
+CERTIFICATIONS
+✓ Deep Learning Specialization (deeplearning.ai, 2021) - Andrew Ng
+✓ Advanced Machine Learning with TensorFlow (Coursera, 2022)
+✓ MLOps Engineering (DataCamp, 2023)
+
+ADDITIONAL INFO
+Languages: English (Fluent), Hindi (Native), Telugu (Native)
+Open to: Remote, Relocation to research hubs
+Availability: 2 weeks notice
+Conference Talks: NeurIPS, ICML, PyData

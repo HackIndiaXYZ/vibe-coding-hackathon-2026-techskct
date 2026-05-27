@@ -1,0 +1,95 @@
+PRIYA NAIR
+UI/UX Designer & Frontend Developer | Figma • Design Systems • React
+📧 priya.nair@email.com | 📱 +91-8765432109 | 📍 Mumbai, India
+🎨 dribbble.com/priyanair | 💼 linkedin.com/in/priyanair | 🌐 priyanair.design
+
+PROFESSIONAL SUMMARY
+Award-winning UI/UX designer with 5+ years creating beautiful, user-centered digital experiences. Specialized in building scalable design systems and collaborating with engineering teams. Passionate about design thinking, accessibility, and creating products that delight users.
+
+DESIGN & TECHNICAL SKILLS
+Design: Figma, Adobe Creative Suite, Prototyping, Design Systems, User Research, Wireframing, Hi-Fi Design, Interaction Design
+Frontend: React, CSS/SASS, Framer Motion, Webflow, HTML5, Responsive Design
+Tools: Notion, Linear, Zeplin, UserTesting, Optimizely, Analytics
+Currently Learning: Three.js, Motion Design
+
+PROFESSIONAL EXPERIENCE
+
+Product Designer | Razorpay (Mumbai, India)
+Jan 2023 – Present | Full-time
+• Redesigned merchant dashboard increasing task completion rate by 28% through user research and iterative design
+• Led design system initiative for 3 product teams with 50+ reusable components and documentation
+• Conducted 40+ user interviews and usability tests to validate design decisions
+• Collaborated with engineers to implement responsive design for 2M+ users
+• Technologies: Figma, React, Storybook, Notion, Hotjar
+
+UX Designer | Zomato (Gurugram, India)
+Aug 2021 – Dec 2022 | Full-time
+• Redesigned restaurant partner onboarding improving funnel completion by 35%
+• Conducted 50+ user interviews and created personas for feature prioritization
+• Designed mobile-first interfaces for 500K+ restaurant partners
+• Created comprehensive design documentation reducing dev handoff time by 40%
+• Technologies: Figma, Protopie, UserTesting
+
+UI/UX Designer | Digital Agency XYZ (Remote)
+Mar 2019 – Jul 2021 | Full-time
+• Designed interfaces for 10+ SaaS products resulting in $2M+ in client revenue
+• Built responsive design system used across 15+ projects
+• Mentored 4 junior designers on best practices
+• Technologies: Figma, Adobe XD, Webflow
+
+UX Design Intern | E-commerce Startup (Mumbai, India)
+Jun 2018 – Feb 2019 | Internship
+• Designed checkout flow reducing cart abandonment by 22%
+• Conducted competitor analysis and created wireframes for 8+ pages
+• Collaborated with product team on feature prioritization
+
+FEATURED DESIGN WORK
+
+FinDash Design System
+Internal Project | Razorpay
+Complete design system and component library for fintech products. Includes 80+ components, dark/light modes, accessibility standards (WCAG 2.1 AA), and comprehensive documentation.
+Status: Internal Use
+Impact: Used by 5 product teams, 15% faster design-to-dev handoff
+
+Mindful - Mental Wellness App UI/UX Design
+Personal Project | priyanair.design/mindful
+End-to-end UI/UX design for meditation and mood tracking app with onboarding, dashboard, session flows, and progress tracking. Includes complete design system and interaction patterns.
+Technologies: Figma, Protopie, Lottie
+Status: Case Study
+Impact: Featured on Designer Hangout, 500+ views
+
+Zomato Partner Portal Redesign
+Case Study | Zomato
+Comprehensive redesign of restaurant management portal increasing partner engagement by 45%. Included research, wireframes, hi-fi mockups, and design documentation.
+Status: Live with 500K+ users
+Impact: +35% funnel completion, +200% support ticket reduction
+
+Fresh Start - Job Board Platform
+Side Project | Figma Community
+Beautiful job board platform design with filtering, job listings, applicant management, and analytics dashboard. Published in Figma community with 3K+ downloads.
+Technologies: Figma
+Status: Template Available
+
+EDUCATION
+
+Bachelor of Design - Communication Design
+National Institute of Design (Ahmedabad, India)
+2017 – 2021 | Grade: Distinction
+
+CERTIFICATIONS & ACHIEVEMENTS
+✓ Google UX Design Certificate (Coursera, 2021) - 40 hour program
+✓ Interaction Design Foundation - Advanced Course (2022)
+✓ Figma Certified (Figma, 2023)
+✓ Adobe Certified Associate - Adobe XD (2021)
+✓ Dribbble Best Shot (3x) - UI Design
+✓ Design Excellence Award - Razorpay (2023)
+
+AWARDS & RECOGNITION
+🏆 Designer of the Year - Digital India Awards 2022
+🏆 Top UX Designer - Dribbble (Featured 5+ times)
+🏆 Zomato Design Innovation Award 2022
+
+ADDITIONAL INFO
+Languages: English (Fluent), Hindi (Fluent), Marathi (Native)
+Open to: Remote, Flexible, Contract work
+Availability: Immediate

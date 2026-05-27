@@ -1,0 +1,162 @@
+{
+  "name": "Vikram Sharma",
+  "title": "ML Engineer & Data Scientist",
+  "email": "vikram.sharma@email.com",
+  "phone": "+91-7654321098",
+  "location": "Hyderabad, India",
+  "availability": "Freelance available",
+  "summary": "Data scientist and ML engineer with 4+ years building production-grade AI/ML systems. Expert in NLP, computer vision, and time-series forecasting. Published researcher with 2+ papers. Experienced deploying models at scale serving millions of users.",
+  "social": {
+    "github": "github.com/vikramsharma",
+    "linkedin": "linkedin.com/in/vikramsharma",
+    "twitter": null,
+    "portfolio": "vikramsharma.ai",
+    "dribbble": null,
+    "kaggle": "kaggle.com/vikramsharma"
+  },
+  "skillGroups": {
+    "primary": ["Python", "PyTorch", "Scikit-learn", "FastAPI"],
+    "secondary": ["LangChain", "Hugging Face", "MLflow", "Spark", "TensorFlow"],
+    "tools": ["Jupyter", "DVC", "Weights & Biases", "Airflow", "Docker", "AWS SageMaker"],
+    "learning": ["JAX", "Diffusion Models", "Reinforcement Learning"]
+  },
+  "skills": ["Python", "PyTorch", "Scikit-learn", "FastAPI", "LangChain", "Hugging Face", "MLflow", "Spark", "TensorFlow", "SQL", "R", "Bash", "Jupyter", "DVC", "Weights & Biases", "Airflow", "Docker", "AWS SageMaker", "Feature Engineering", "A/B Testing"],
+  "experience": [
+    {
+      "company": "Microsoft",
+      "role": "ML Engineer II",
+      "duration": "Jul 2022 – Present",
+      "location": "Hyderabad, India",
+      "type": "Full-time",
+      "description": "Building NLP and AI services for Azure Cognitive Services platform.",
+      "tech": ["PyTorch", "Transformers", "Azure ML", "Docker", "FastAPI"],
+      "achievements": [
+        "Built NLP pipelines for Azure Cognitive Services processing 1M+ daily requests",
+        "Deployed multilingual sentiment analysis model achieving 95.2% accuracy across 12 languages",
+        "Optimized model inference latency from 500ms to 50ms using quantization",
+        "Led team of 3 engineers on document classification project generating $500K+ ARR",
+        "Mentored 2 junior ML engineers on production ML best practices"
+      ]
+    },
+    {
+      "company": "Analytics Startup",
+      "role": "Data Scientist",
+      "duration": "Feb 2021 – Jun 2022",
+      "location": "Bangalore, India",
+      "type": "Full-time",
+      "description": "Built end-to-end machine learning systems for customer analytics.",
+      "tech": ["Python", "XGBoost", "Scikit-learn", "Streamlit", "Airflow", "PostgreSQL"],
+      "achievements": [
+        "Built customer churn prediction model (XGBoost) achieving 89% AUC",
+        "Created end-to-end ML pipeline with automatic feature engineering and deployment",
+        "Built Streamlit dashboard with SHAP explanations for business stakeholders",
+        "Increased model accuracy by 12% through advanced feature engineering",
+        "Deployed models to production serving 50K+ predictions monthly"
+      ]
+    },
+    {
+      "company": "AI Research Lab",
+      "role": "ML Researcher Intern",
+      "duration": "Jun 2020 – Jan 2021",
+      "location": "Remote",
+      "type": "Internship",
+      "description": "Conducted research on efficient NLP and transformer optimization.",
+      "tech": ["PyTorch", "Transformers", "HuggingFace"],
+      "achievements": [
+        "Implemented BERT-based text classification achieving state-of-the-art results",
+        "Published 2 research papers on NLP optimization techniques",
+        "Contributed to open-source transformer library with 2K+ GitHub stars",
+        "Presented findings at AI research conferences"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "title": "SentimentAPI",
+      "tagline": "Multilingual sentiment analysis REST API",
+      "description": "Production-ready sentiment analysis API supporting 12 languages. Fine-tuned mBERT on 500K+ manual annotations achieving 95.2% accuracy. Serves 100K+ requests daily with <200ms p99 latency.",
+      "tech": ["Python", "Transformers", "FastAPI", "Docker", "Redis", "PostgreSQL"],
+      "category": "ML / API",
+      "status": "Live",
+      "github": "github.com/vikramsharma/sentimentapi",
+      "live_url": "sentimentapi.dev",
+      "stars": 728,
+      "featured": true
+    },
+    {
+      "title": "ChurnPredict",
+      "tagline": "Customer churn prediction for SaaS",
+      "description": "End-to-end ML pipeline for customer churn prediction with feature engineering, XGBoost model, SHAP explanations, and interactive Streamlit dashboard for business insights.",
+      "tech": ["Python", "XGBoost", "SHAP", "Streamlit", "MLflow", "Pandas"],
+      "category": "ML Project",
+      "status": "Live",
+      "github": "github.com/vikramsharma/churnpredict",
+      "live_url": "churnpredict.streamlit.app",
+      "stars": 214,
+      "featured": true
+    },
+    {
+      "title": "ImageClassifier",
+      "tagline": "Custom vision model library with transfer learning",
+      "description": "PyTorch library for building and deploying custom computer vision models. Includes pre-trained weights, data augmentation pipeline, ONNX export, and quantization support.",
+      "tech": ["PyTorch", "torchvision", "ONNX"],
+      "category": "Library",
+      "status": "Live",
+      "github": "github.com/vikramsharma/imageclassifier",
+      "live_url": null,
+      "stars": 156,
+      "featured": false
+    },
+    {
+      "title": "TimeSeriesForecasting",
+      "tagline": "LSTM-based time series forecasting framework",
+      "description": "Production-grade LSTM framework for time-series forecasting with multivariate support, attention mechanism, and uncertainty quantification.",
+      "tech": ["PyTorch", "Lightning", "Optuna"],
+      "category": "ML Framework",
+      "status": "Completed",
+      "github": "github.com/vikramsharma/timeseries",
+      "live_url": null,
+      "stars": 89,
+      "featured": false
+    }
+  ],
+  "education": [
+    {
+      "institution": "IIT Bombay",
+      "degree": "M.Tech Artificial Intelligence",
+      "duration": "2020 – 2022",
+      "grade": "CGPA: 9.1/10.0"
+    },
+    {
+      "institution": "BITS Pilani",
+      "degree": "B.E. Computer Science",
+      "duration": "2016 – 2020",
+      "grade": "CGPA: 8.4/10.0"
+    }
+  ],
+  "certifications": [
+    {
+      "name": "Deep Learning Specialization",
+      "issuer": "deeplearning.ai",
+      "year": 2021
+    },
+    {
+      "name": "Advanced Machine Learning with TensorFlow",
+      "issuer": "Coursera",
+      "year": 2022
+    },
+    {
+      "name": "Kaggle Competition Expert",
+      "issuer": "Kaggle",
+      "year": 2022
+    }
+  ],
+  "stats": {
+    "years_experience": 4,
+    "projects_shipped": 11,
+    "github_repos": 67,
+    "github_stars": 1943
+  },
+  "accentColor": null,
+  "theme": "scientist"
+}

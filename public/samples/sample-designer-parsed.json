@@ -1,0 +1,142 @@
+{
+  "name": "Priya Nair",
+  "title": "UI/UX Designer & Frontend Developer",
+  "email": "priya.nair@email.com",
+  "phone": "+91-8765432109",
+  "location": "Mumbai, India",
+  "availability": "Not available",
+  "summary": "Award-winning UI/UX designer with 5+ years creating beautiful user-centered digital experiences. Specialized in building scalable design systems and collaborating with engineering teams to create delightful products.",
+  "social": {
+    "github": null,
+    "linkedin": "linkedin.com/in/priyanair",
+    "twitter": null,
+    "portfolio": "priyanair.design",
+    "dribbble": "dribbble.com/priyanair",
+    "kaggle": null
+  },
+  "skillGroups": {
+    "primary": ["Figma", "React", "CSS/SASS", "Design Systems"],
+    "secondary": ["Framer Motion", "Storybook", "Webflow", "Lottie", "Adobe Creative Suite"],
+    "tools": ["Notion", "Linear", "Zeplin", "UserTesting", "Adobe Illustrator", "Hotjar"],
+    "learning": ["Three.js", "Motion Design", "WebGL"]
+  },
+  "skills": ["Figma", "React", "CSS", "SASS", "Design Systems", "Framer Motion", "Storybook", "Webflow", "Lottie", "Adobe Creative Suite", "Notion", "Linear", "Zeplin", "UserTesting", "Interaction Design", "Prototyping", "Wireframing"],
+  "experience": [
+    {
+      "company": "Razorpay",
+      "role": "Product Designer",
+      "duration": "Jan 2023 – Present",
+      "location": "Mumbai, India",
+      "type": "Full-time",
+      "description": "Leading design initiatives for payment processing platform used by enterprise customers.",
+      "tech": ["Figma", "React", "Storybook", "Hotjar"],
+      "achievements": [
+        "Redesigned merchant dashboard increasing task completion rate by 28%",
+        "Led design system initiative with 50+ reusable components and documentation",
+        "Conducted 40+ user interviews and usability tests to validate designs",
+        "Collaborated with engineers to implement responsive design for 2M+ users"
+      ]
+    },
+    {
+      "company": "Zomato",
+      "role": "UX Designer",
+      "duration": "Aug 2021 – Dec 2022",
+      "location": "Gurugram, India",
+      "type": "Full-time",
+      "description": "Designed user experiences for restaurant partner platform.",
+      "tech": ["Figma", "Protopie", "UserTesting"],
+      "achievements": [
+        "Redesigned restaurant onboarding flow improving completion by 35%",
+        "Conducted 50+ user interviews and created detailed personas",
+        "Designed mobile-first interfaces for 500K+ restaurant partners",
+        "Created comprehensive design documentation reducing handoff time by 40%"
+      ]
+    },
+    {
+      "company": "Digital Agency XYZ",
+      "role": "UI/UX Designer",
+      "duration": "Mar 2019 – Jul 2021",
+      "location": "Remote",
+      "type": "Full-time",
+      "description": "Designed interfaces for SaaS products and digital platforms.",
+      "tech": ["Figma", "Adobe XD", "Webflow"],
+      "achievements": [
+        "Designed 10+ SaaS product interfaces resulting in $2M+ client revenue",
+        "Built responsive design system used across 15+ projects",
+        "Mentored 4 junior designers on design best practices",
+        "Improved design-to-dev handoff efficiency by 40%"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "title": "FinDash Design System",
+      "tagline": "Complete design system for fintech products",
+      "description": "80+ components, dark/light modes, accessibility compliant (WCAG 2.1 AA). Used internally by 5 product teams for consistent design language and faster development.",
+      "tech": ["Figma", "React", "Storybook", "Chromatic"],
+      "category": "Design System",
+      "status": "Internal",
+      "github": "github.com/priyanair/findash",
+      "live_url": "findash.design",
+      "stars": 0,
+      "featured": true
+    },
+    {
+      "title": "Mindful",
+      "tagline": "Mental wellness app UI design",
+      "description": "End-to-end UI/UX design for meditation and mood tracking application. Includes complete onboarding flow, dashboard, session flows, and progress tracking components with soothing visual language.",
+      "tech": ["Figma", "Protopie", "Lottie"],
+      "category": "Mobile Design",
+      "status": "Case Study",
+      "github": null,
+      "live_url": "priyanair.design/mindful",
+      "stars": 0,
+      "featured": true
+    },
+    {
+      "title": "Fresh Start - Job Board Design",
+      "tagline": "Job marketplace platform design",
+      "description": "Beautiful job board platform design with advanced filtering, job listings, applicant management, and analytics dashboard. Published in Figma community with 3K+ downloads.",
+      "tech": ["Figma"],
+      "category": "Web App Design",
+      "status": "Live",
+      "github": null,
+      "live_url": "figma.com/community/file/freshstart",
+      "stars": 3000,
+      "featured": false
+    }
+  ],
+  "education": [
+    {
+      "institution": "National Institute of Design",
+      "degree": "B.Des Communication Design",
+      "duration": "2017 – 2021",
+      "grade": "Distinction"
+    }
+  ],
+  "certifications": [
+    {
+      "name": "Google UX Design Certificate",
+      "issuer": "Google / Coursera",
+      "year": 2021
+    },
+    {
+      "name": "Interaction Design Foundation Advanced",
+      "issuer": "IDF",
+      "year": 2022
+    },
+    {
+      "name": "Figma Certified Designer",
+      "issuer": "Figma",
+      "year": 2023
+    }
+  ],
+  "stats": {
+    "years_experience": 5,
+    "projects_shipped": 24,
+    "github_repos": 12,
+    "github_stars": 210
+  },
+  "accentColor": null,
+  "theme": "designer"
+}

@@ -1,0 +1,153 @@
+{
+  "name": "Arjun Mehta",
+  "title": "Full Stack Developer",
+  "email": "arjun.mehta@email.com",
+  "phone": "+91-9876543210",
+  "location": "Bengaluru, India",
+  "availability": "Open to work",
+  "summary": "Passionate full-stack developer with 4+ years of experience building scalable web applications. Proven track record of delivering high-performance solutions that improve user experience and reduce system latency by up to 40%.",
+  "social": {
+    "github": "github.com/arjunmehta",
+    "linkedin": "linkedin.com/in/arjunmehta",
+    "twitter": null,
+    "portfolio": "arjunmehta.dev",
+    "dribbble": null,
+    "kaggle": null
+  },
+  "skillGroups": {
+    "primary": ["React", "Node.js", "TypeScript", "PostgreSQL"],
+    "secondary": ["Docker", "AWS", "Redis", "GraphQL", "Express.js", "Next.js"],
+    "tools": ["VSCode", "GitHub", "Figma", "Postman", "GitHub Actions", "Vercel", "Datadog"],
+    "learning": ["Rust", "Web3", "Kubernetes"]
+  },
+  "skills": ["React", "Node.js", "TypeScript", "PostgreSQL", "JavaScript", "REST APIs", "Docker", "AWS", "Redis", "GraphQL", "Express.js", "Next.js", "VSCode", "GitHub", "Figma", "Postman", "GitHub Actions", "Vercel", "Datadog"],
+  "experience": [
+    {
+      "company": "Infosys",
+      "role": "Software Engineer",
+      "duration": "Jan 2022 – Present",
+      "location": "Bengaluru, India",
+      "type": "Full-time",
+      "description": "Architected and built microservices for banking clients, handling millions of transactions daily with high reliability.",
+      "tech": ["Node.js", "PostgreSQL", "Docker", "AWS Lambda", "React"],
+      "achievements": [
+        "Reduced API latency by 40% through query optimization and caching strategies",
+        "Built real-time data processing pipeline handling 1M+ requests/day",
+        "Mentored 3 junior developers on best practices and code reviews",
+        "Led architecture decisions for microservices adoption across 5 teams"
+      ]
+    },
+    {
+      "company": "TechStartup Inc.",
+      "role": "Frontend Developer",
+      "duration": "Mar 2021 – Dec 2021",
+      "location": "Remote",
+      "type": "Full-time",
+      "description": "Developed and maintained React-based dashboard serving thousands of daily active users.",
+      "tech": ["React", "Redux", "Tailwind CSS", "Firebase", "WebSocket"],
+      "achievements": [
+        "Built React dashboard used by 10K+ daily active users",
+        "Implemented real-time notifications using WebSockets with <100ms latency",
+        "Improved Lighthouse performance score from 65 to 92",
+        "Reduced bundle size by 35% through code splitting and lazy loading"
+      ]
+    },
+    {
+      "company": "CreativeAgency",
+      "role": "Frontend Developer Intern",
+      "duration": "Jun 2020 – Feb 2021",
+      "location": "Bengaluru, India",
+      "type": "Internship",
+      "description": "Contributed to UI component development and open-source projects.",
+      "tech": ["React", "CSS", "JavaScript"],
+      "achievements": [
+        "Built responsive UI components following design specifications",
+        "Contributed to React component library with 500+ GitHub stars",
+        "Fixed 50+ bugs and improved code quality across the codebase"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "title": "TaskFlow",
+      "tagline": "Project management app with AI task suggestions",
+      "description": "A Trello-like application with AI-powered task prioritization using OpenAI API. Supports teams of up to 50 users with real-time collaboration via WebSockets. Integrated with Stripe for payments.",
+      "tech": ["React", "Node.js", "Socket.io", "OpenAI API", "MongoDB", "Stripe"],
+      "category": "Web App",
+      "status": "Live",
+      "github": "github.com/arjunmehta/taskflow",
+      "live_url": "taskflow.vercel.app",
+      "stars": 312,
+      "featured": true
+    },
+    {
+      "title": "PriceWatch",
+      "tagline": "E-commerce price tracker with alerts",
+      "description": "Tracks prices across Amazon, Flipkart, and Meesho. Sends WhatsApp/email alerts when prices drop using Twilio integration.",
+      "tech": ["Python", "BeautifulSoup", "FastAPI", "Twilio", "PostgreSQL", "React"],
+      "category": "Tool",
+      "status": "Live",
+      "github": "github.com/arjunmehta/pricewatch",
+      "live_url": "pricewatch.in",
+      "stars": 89,
+      "featured": true
+    },
+    {
+      "title": "CodeSnap",
+      "tagline": "Beautiful code screenshot generator",
+      "description": "Generate stunning code screenshots for social media. Features 15+ themes, custom backgrounds, export as PNG/SVG. Built with Next.js and Canvas API.",
+      "tech": ["Next.js", "Tailwind CSS", "Canvas API", "Cloudinary"],
+      "category": "Developer Tool",
+      "status": "Live",
+      "github": "github.com/arjunmehta/codesnap",
+      "live_url": "codesnap.io",
+      "stars": 541,
+      "featured": false
+    },
+    {
+      "title": "Climate Dashboard",
+      "tagline": "Real-time weather analytics and forecasting",
+      "description": "Real-time weather data visualization dashboard with 72-hour forecasts and historical trends analysis.",
+      "tech": ["Next.js", "D3.js", "PostgreSQL", "OpenWeather API"],
+      "category": "Web App",
+      "status": "Completed",
+      "github": "github.com/arjunmehta/climate-dash",
+      "live_url": null,
+      "stars": 0,
+      "featured": false
+    }
+  ],
+  "education": [
+    {
+      "institution": "VIT University",
+      "degree": "B.Tech Computer Science & Engineering",
+      "duration": "2018 – 2022",
+      "grade": "CGPA: 8.7/10.0"
+    }
+  ],
+  "certifications": [
+    {
+      "name": "AWS Solutions Architect Associate",
+      "issuer": "Amazon Web Services",
+      "year": 2023
+    },
+    {
+      "name": "Meta React Developer Certificate",
+      "issuer": "Meta / Coursera",
+      "year": 2022
+    },
+    {
+      "name": "Advanced TypeScript Mastery",
+      "issuer": "Udemy",
+      "year": 2023
+    }
+  ],
+  "stats": {
+    "years_experience": 4,
+    "projects_shipped": 18,
+    "github_repos": 42,
+    "github_stars": 942
+  },
+  "accentColor": null,
+  "theme": "developer"
+}
