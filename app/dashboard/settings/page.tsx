@@ -19,6 +19,21 @@ export default function SettingsPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState('');
   const [deletingData, setDeletingData] = useState(false);
+  
+  // Notification states
+  const [milestones, setMilestones] = useState(true);
+  const [weeklyDigest, setWeeklyDigest] = useState(true);
+  const [productUpdates, setProductUpdates] = useState(false);
+
+  // Appearance state
+  const [themeMode, setThemeMode] = useState('Dark');
+
+  // Change Password states
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [updatingPassword, setUpdatingPassword] = useState(false);
+
   const router = useRouter();
   const supabase = createClient();
 
@@ -29,6 +44,17 @@ export default function SettingsPage() {
       setUser(user);
       setName(user.user_metadata?.full_name || '');
       setEmail(user.email || '');
+
+      // Load settings from localStorage if available
+      const storedMilestones = localStorage.getItem('notif_milestones');
+      const storedWeekly = localStorage.getItem('notif_weeklyDigest');
+      const storedUpdates = localStorage.getItem('notif_productUpdates');
+      const storedTheme = localStorage.getItem('themeMode');
+
+      if (storedMilestones !== null) setMilestones(storedMilestones === 'true');
+      if (storedWeekly !== null) setWeeklyDigest(storedWeekly === 'true');
+      if (storedUpdates !== null) setProductUpdates(storedUpdates === 'true');
+      if (storedTheme !== null) setThemeMode(storedTheme);
     };
     load();
   }, []);
@@ -39,6 +65,48 @@ export default function SettingsPage() {
     if (error) toast.error(error.message);
     else toast.success('Profile updated!');
     setSaving(false);
+  };
+
+  const handleToggleNotification = (key: string, currentValue: boolean, setter: (val: boolean) => void, label: string) => {
+    const newValue = !currentValue;
+    setter(newValue);
+    localStorage.setItem(`notif_${key}`, String(newValue));
+    toast.success(`${label} updated!`);
+  };
+
+  const handleThemeChange = (mode: string) => {
+    setThemeMode(mode);
+    localStorage.setItem('themeMode', mode);
+    toast.success(`Theme preference set to ${mode}`);
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newPassword) {
+      toast.error('Password cannot be empty');
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast.error('Password must be at least 6 characters');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error('Passwords do not match');
+      return;
+    }
+    setUpdatingPassword(true);
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+      if (error) throw error;
+      toast.success('Password updated successfully!');
+      setShowPasswordModal(false);
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error: any) {
+      toast.error(error.message || 'Failed to update password');
+    } finally {
+      setUpdatingPassword(false);
+    }
   };
 
   const handleDeleteAccount = async () => {
@@ -143,18 +211,21 @@ export default function SettingsPage() {
                 <h2 className="text-lg font-bold text-white mb-6">Notification Preferences</h2>
                 <div className="space-y-4">
                   {[
-                    { label: 'Portfolio view milestones', desc: 'Get notified at 10, 100, 1000 views', checked: true },
-                    { label: 'Weekly analytics digest', desc: 'Summary of your portfolio performance', checked: true },
-                    { label: 'Product updates', desc: 'New features and improvements', checked: false },
+                    { key: 'milestones', label: 'Portfolio view milestones', desc: 'Get notified at 10, 100, 1000 views', checked: milestones, setter: setMilestones },
+                    { key: 'weeklyDigest', label: 'Weekly analytics digest', desc: 'Summary of your portfolio performance', checked: weeklyDigest, setter: setWeeklyDigest },
+                    { key: 'productUpdates', label: 'Product updates', desc: 'New features and improvements', checked: productUpdates, setter: setProductUpdates },
                   ].map(item => (
                     <div key={item.label} className="flex items-center justify-between p-4 glass rounded-xl">
                       <div>
                         <div className="text-sm font-medium text-white">{item.label}</div>
                         <div className="text-xs text-slate-500 mt-0.5">{item.desc}</div>
                       </div>
-                      <div className={`w-10 h-5 rounded-full relative cursor-pointer transition-colors ${item.checked ? 'bg-indigo-600' : 'bg-slate-700'}`}>
+                      <button
+                        onClick={() => handleToggleNotification(item.key, item.checked, item.setter, item.label)}
+                        className={`w-10 h-5 rounded-full relative transition-colors cursor-pointer focus:outline-none ${item.checked ? 'bg-indigo-600' : 'bg-slate-700'}`}
+                      >
                         <div className={`absolute top-0.5 w-4 h-4 bg-white rounded-full shadow transition-all ${item.checked ? 'left-5' : 'left-0.5'}`} />
-                      </div>
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -169,10 +240,14 @@ export default function SettingsPage() {
                     <label className="text-xs font-medium text-slate-400 block mb-3 tracking-wide">Color Scheme</label>
                     <div className="flex gap-3">
                       {['Dark', 'System'].map(mode => (
-                        <button key={mode} className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all ${
-                          mode === 'Dark' ? 'border-indigo-500/50 bg-indigo-500/10 text-indigo-300' : 'border-white/10 text-slate-400 hover:border-white/20'
-                        }`}>
-                          {mode === 'Dark' && <CheckCircle2 className="w-3.5 h-3.5 inline mr-1.5 text-indigo-400" />}
+                        <button
+                          key={mode}
+                          onClick={() => handleThemeChange(mode)}
+                          className={`px-4 py-2 rounded-xl text-sm font-medium border transition-all flex items-center ${
+                            themeMode === mode ? 'border-indigo-500/50 bg-indigo-500/10 text-indigo-300' : 'border-white/10 text-slate-400 hover:border-white/20'
+                          }`}
+                        >
+                          {themeMode === mode && <CheckCircle2 className="w-3.5 h-3.5 inline mr-1.5 text-indigo-400" />}
                           {mode}
                         </button>
                       ))}
@@ -191,14 +266,7 @@ export default function SettingsPage() {
                       <div className="text-sm font-medium text-white">Change Password</div>
                       <div className="text-xs text-slate-500 mt-0.5">Update your account password</div>
                     </div>
-                    <button className="btn-secondary text-xs py-2">Update</button>
-                  </div>
-                  <div className="p-4 glass rounded-xl flex items-center justify-between">
-                    <div>
-                      <div className="text-sm font-medium text-white">Two-Factor Authentication</div>
-                      <div className="text-xs text-slate-500 mt-0.5">Add an extra layer of security</div>
-                    </div>
-                    <button className="btn-secondary text-xs py-2">Enable</button>
+                    <button onClick={() => setShowPasswordModal(true)} className="btn-secondary text-xs py-2">Update</button>
                   </div>
                   <div className="pt-4 border-t border-white/5">
                     <button onClick={() => setShowDeleteModal(true)} className="text-xs text-rose-400 hover:text-rose-300 transition-colors">Delete Account & Data</button>
@@ -209,6 +277,75 @@ export default function SettingsPage() {
           </motion.div>
         </div>
       </div>
+
+      {/* Change Password Modal */}
+      <AnimatePresence>
+        {showPasswordModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-md bg-slate-900 border border-white/10 rounded-2xl p-6 shadow-2xl relative"
+            >
+              <button
+                onClick={() => setShowPasswordModal(false)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="flex items-center gap-3 mb-4 text-indigo-400">
+                <Shield className="w-6 h-6 shrink-0" />
+                <h3 className="text-lg font-bold text-white">Change Password</h3>
+              </div>
+
+              <form onSubmit={handleChangePassword} className="space-y-4">
+                <div>
+                  <label className="text-xs font-medium text-slate-400 block mb-1.5 tracking-wide">New Password</label>
+                  <input
+                    type="password"
+                    value={newPassword}
+                    onChange={e => setNewPassword(e.target.value)}
+                    className="input-field w-full text-sm"
+                    placeholder="Min. 6 characters"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-medium text-slate-400 block mb-1.5 tracking-wide">Confirm New Password</label>
+                  <input
+                    type="password"
+                    value={confirmPassword}
+                    onChange={e => setConfirmPassword(e.target.value)}
+                    className="input-field w-full text-sm"
+                    placeholder="Confirm new password"
+                    required
+                  />
+                </div>
+
+                <div className="flex gap-3 justify-end pt-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordModal(false)}
+                    className="btn-secondary text-xs px-4 py-2"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={updatingPassword}
+                    className="px-4 py-2 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 transition-all"
+                  >
+                    {updatingPassword ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                    Update Password
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* Delete Confirmation Modal */}
       <AnimatePresence>
