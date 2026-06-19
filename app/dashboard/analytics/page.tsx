@@ -8,9 +8,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   ArrowLeft, BarChart3, Eye, TrendingUp, Globe,
-  Users, Zap, Monitor, Smartphone, Tablet, ExternalLink
+  Users, Zap, Monitor, Smartphone, Tablet, ExternalLink, Download
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
+import toast from 'react-hot-toast';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
 interface Portfolio {
@@ -65,6 +66,28 @@ export default function DashboardAnalyticsPage() {
     load();
   }, []);
 
+  const exportToCSV = () => {
+    if (portfolios.length === 0) {
+      toast.error('No portfolio data to export');
+      return;
+    }
+    let csvContent = 'data:text/csv;charset=utf-8,';
+    csvContent += 'Portfolio Title,Theme,Views,Status\n';
+    portfolios.forEach(p => {
+      const title = p.title.replace(/"/g, '""');
+      const status = p.published ? 'Live' : 'Draft';
+      csvContent += `"${title}",${p.theme},${p.views || 0},${status}\n`;
+    });
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `folioai_analytics_${Date.now()}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('Analytics CSV exported!');
+  };
+
   const totalViews = portfolios.reduce((s, p) => s + (p.views || 0), 0);
   const publishedCount = portfolios.filter(p => p.published).length;
   const chartData = generateDailyData(totalViews || 120);
@@ -83,14 +106,23 @@ export default function DashboardAnalyticsPage() {
   return (
     <div className="min-h-screen mesh-bg">
       {/* Header */}
-      <div className="glass-strong border-b border-white/5 h-14 flex items-center px-6 gap-4 sticky top-0 z-10">
-        <Link href="/dashboard" className="flex items-center gap-1.5 text-slate-400 hover:text-white text-sm transition-colors">
-          <ArrowLeft className="w-4 h-4" /> Dashboard
-        </Link>
-        <div className="flex items-center gap-2">
-          <BarChart3 className="w-4 h-4 text-indigo-400" />
-          <span className="text-sm font-semibold text-white">Analytics Overview</span>
+      <div className="glass-strong border-b border-white/5 h-14 flex items-center px-6 justify-between sticky top-0 z-10">
+        <div className="flex items-center gap-4">
+          <Link href="/dashboard" className="flex items-center gap-1.5 text-slate-400 hover:text-white text-sm transition-colors">
+            <ArrowLeft className="w-4 h-4" /> Dashboard
+          </Link>
+          <div className="flex items-center gap-2">
+            <BarChart3 className="w-4 h-4 text-indigo-400" />
+            <span className="text-sm font-semibold text-white">Analytics Overview</span>
+          </div>
         </div>
+        
+        <button
+          onClick={exportToCSV}
+          className="btn-primary text-xs px-3 py-1.5 flex items-center gap-1.5 rounded-lg"
+        >
+          <Download className="w-3.5 h-3.5" /> Export CSV
+        </button>
       </div>
 
       <div className="container-page py-8">

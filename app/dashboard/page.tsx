@@ -37,7 +37,7 @@ const THEME_CONFIG: Record<string, { icon: string; from: string; to: string; acc
 const NAV_ITEMS = [
   { icon: Layout,    label: 'Portfolios',  href: '/dashboard',          active: true },
   { icon: BarChart3, label: 'Analytics',   href: '/dashboard/analytics' },
-  { icon: Star,      label: 'Templates',   href: '/templates'           },
+  { icon: FileText,  label: 'ATS Checker', href: '/dashboard/ats'       },
   { icon: Settings,  label: 'Settings',    href: '/dashboard/settings'  },
 ];
 

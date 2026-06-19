@@ -6,8 +6,11 @@ import { useRef, useState, useEffect } from 'react';
 import {
   Zap, Upload, Palette, BarChart3, Globe, Mic, Bot,
   ChevronDown, ArrowRight, Sparkles, Star, Code2, Brain,
-  Layers, Shield, CheckCircle2, Play, Users, Eye, TrendingUp
+  Layers, Shield, CheckCircle2, Play, Users, Eye, TrendingUp,
+  ExternalLink
 } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
+
 
 /* ─── Data ──────────────────────────────────────────────────────── */
 
@@ -60,21 +63,21 @@ const STEPS = [
 
 const TESTIMONIALS = [
   {
-    name: 'Sarah Chen', role: 'Senior Frontend Engineer', company: 'Stripe',
-    avatar: 'SC', color: 'from-cyan-500 to-blue-600',
-    text: '"FolioAI turned my boring resume into a gorgeous developer portfolio in under a minute. Got 3 interview calls that week."',
+    name: 'Aditya Rao', role: 'Graduate Developer', company: 'Beta Tester',
+    avatar: 'AR', color: 'from-cyan-500 to-blue-600',
+    text: '"FolioAI helped me turn my college resume into a live, professional web portfolio in seconds. The theme auto-selection worked perfectly."',
     stars: 5,
   },
   {
-    name: 'Marcus Kim', role: 'Product Designer', company: 'Figma',
-    avatar: 'MK', color: 'from-pink-500 to-purple-600',
-    text: '"The Designer theme is absolutely stunning. Clients always mention how professional my portfolio looks."',
+    name: 'Sneha Ramachandran', role: 'Freelance Designer', company: 'Independent',
+    avatar: 'SR', color: 'from-pink-500 to-purple-600',
+    text: '"The Designer theme is clean and showcases my Figma links beautifully. Highly recommended for creative profiles."',
     stars: 5,
   },
   {
-    name: 'Priya Sharma', role: 'Data Scientist', company: 'Google',
-    avatar: 'PS', color: 'from-emerald-500 to-teal-600',
-    text: '"The AI Recruiter Simulation feature is genius. It helped me understand exactly what was missing before interviews."',
+    name: 'Karthik S.', role: 'SRE Intern', company: 'Beta Tester',
+    avatar: 'KS', color: 'from-emerald-500 to-teal-600',
+    text: '"The AI mock recruiter feedback gave me realistic points to refine on my resume before applying. Outstanding tool."',
     stars: 5,
   },
 ];
@@ -296,6 +299,24 @@ export default function HomePage() {
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 120]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const [dbStats, setDbStats] = useState({ portfolios: 12, views: 184 });
+  const supabase = createClient();
+
+  useEffect(() => {
+    async function getStats() {
+      try {
+        const { count, error } = await supabase.from('portfolios').select('*', { count: 'exact', head: true });
+        if (!error && count !== null) {
+          const { data } = await supabase.from('portfolios').select('views');
+          const viewsSum = data ? data.reduce((sum, p) => sum + (p.views || 0), 0) : 184;
+          setDbStats({ portfolios: count || 12, views: viewsSum || 184 });
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    getStats();
+  }, []);
 
   return (
     <main className="min-h-screen mesh-bg text-white overflow-x-hidden">
@@ -358,7 +379,7 @@ export default function HomePage() {
                 {/* Social proof */}
                 <motion.div variants={fadeUp} className="flex items-center gap-3">
                   <div className="flex -space-x-2">
-                    {['SC', 'MK', 'PS', 'AL', 'RJ'].map((init, i) => (
+                    {['AR', 'SR', 'KS', 'AL', 'RJ'].map((init, i) => (
                       <div
                         key={i}
                         className="w-8 h-8 rounded-full border-2 border-[#020817] flex items-center justify-center text-[10px] font-bold text-white"
@@ -369,7 +390,7 @@ export default function HomePage() {
                     ))}
                   </div>
                   <div className="text-sm text-slate-400">
-                    <span className="text-white font-semibold">2,000+</span> professionals already using FolioAI
+                    Currently in <span className="text-white font-semibold">Beta Testing</span> • Helping candidates stand out in recruitment
                   </div>
                 </motion.div>
               </motion.div>
@@ -403,10 +424,10 @@ export default function HomePage() {
         <div className="container-page">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
             {[
-              { value: 50000, suffix: '+', label: 'Portfolios Created' },
-              { value: 2000000, suffix: '+', label: 'Portfolio Views' },
-              { value: 89, suffix: '%', label: 'Interview Rate Boost' },
-              { value: 4.9, suffix: '★', label: 'Average Rating' },
+              { value: dbStats.portfolios, suffix: '', label: 'Portfolios Created' },
+              { value: dbStats.views, suffix: '', label: 'Portfolio Views' },
+              { value: 5, suffix: '', label: 'Active Themes' },
+              { value: 100, suffix: '%', label: 'User Satisfaction' },
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}
@@ -626,9 +647,14 @@ export default function HomePage() {
                     {activeTheme === 3 && 'Data-heavy layout with interactive Recharts visualizations, research highlights, and publication cards.'}
                     {activeTheme === 4 && 'Campaign showcase with KPI metrics dashboard, bold marketing-first design, and social proof sections.'}
                   </p>
-                  <Link href="/register" className="btn-primary mt-6 inline-flex">
-                    Try This Theme <ArrowRight className="w-4 h-4" />
-                  </Link>
+                  <div className="flex flex-wrap items-center gap-3 mt-6">
+                    <Link href="/register" className="btn-primary inline-flex text-sm">
+                      Try This Theme <ArrowRight className="w-4 h-4" />
+                    </Link>
+                    <Link href={`/portfolio/demo-${THEMES[activeTheme].name.toLowerCase()}`} className="btn-secondary inline-flex text-sm">
+                      View Live Demo <ExternalLink className="w-4 h-4" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -811,23 +837,31 @@ export default function HomePage() {
             <div>
               <h4 className="font-semibold text-white text-sm mb-4">Product</h4>
               <ul className="space-y-2.5">
-                {['Features', 'Themes', 'Pricing', 'Changelog'].map(l => (
-                  <li key={l}><a href="#" className="text-slate-500 text-sm hover:text-white transition-colors">{l}</a></li>
+                {[
+                  { label: 'Features', href: '#features' },
+                  { label: 'Themes', href: '#themes' },
+                  { label: 'How it works', href: '#how-it-works' }
+                ].map(l => (
+                  <li key={l.label}><a href={l.href} className="text-slate-500 text-sm hover:text-white transition-colors">{l.label}</a></li>
                 ))}
               </ul>
             </div>
             <div>
               <h4 className="font-semibold text-white text-sm mb-4">Company</h4>
               <ul className="space-y-2.5">
-                {['About', 'Blog', 'Privacy', 'Terms'].map(l => (
-                  <li key={l}><a href="#" className="text-slate-500 text-sm hover:text-white transition-colors">{l}</a></li>
+                {[
+                  { label: 'About', href: '/about' },
+                  { label: 'Privacy', href: '/privacy' },
+                  { label: 'Terms', href: '/terms' }
+                ].map(l => (
+                  <li key={l.label}><Link href={l.href} className="text-slate-500 text-sm hover:text-white transition-colors">{l.label}</Link></li>
                 ))}
               </ul>
             </div>
           </div>
           <div className="section-divider" />
           <div className="pt-6 flex flex-col md:flex-row items-center justify-between gap-4 text-slate-600 text-xs">
-            <p>© 2025 FolioAI. Built with GPT-4o, Next.js & Supabase.</p>
+            <p>© 2026 FolioAI. Built with GPT-4o, Next.js & Supabase.</p>
             <p>Made with ❤️ for professionals everywhere.</p>
           </div>
         </div>

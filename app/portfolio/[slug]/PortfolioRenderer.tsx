@@ -402,7 +402,26 @@ export default function PortfolioRenderer({ portfolio }: { portfolio: Portfolio 
 
   // Read active theme configurations dynamically
   const activeTheme = portfolio.theme || d.theme || 'developer';
-  const cfg = THEME_CONFIGS[activeTheme] || THEME_CONFIGS.developer;
+  const baseCfg = THEME_CONFIGS[activeTheme] || THEME_CONFIGS.developer;
+
+  const [isLightMode, setIsLightMode] = useState(false);
+
+  useEffect(() => {
+    setIsLightMode(baseCfg.isLight || false);
+  }, [activeTheme, baseCfg.isLight]);
+
+  const cfg = {
+    ...baseCfg,
+    bg: isLightMode ? (activeTheme === 'designer' ? '#fdf9f9' : '#f8fafc') : (activeTheme === 'designer' ? '#181212' : baseCfg.bg),
+    text: isLightMode ? '#0f172a' : (activeTheme === 'designer' ? '#f5f5f5' : baseCfg.text),
+    subText: isLightMode ? '#475569' : (activeTheme === 'designer' ? 'rgba(245, 245, 245, 0.7)' : baseCfg.subText),
+    cardBg: isLightMode ? 'rgba(0, 0, 0, 0.02)' : baseCfg.cardBg,
+    cardBorder: isLightMode ? 'rgba(0, 0, 0, 0.08)' : baseCfg.cardBorder,
+    badgeBg: isLightMode ? 'rgba(0, 0, 0, 0.04)' : baseCfg.badgeBg,
+    badgeBorder: isLightMode ? 'rgba(0, 0, 0, 0.08)' : baseCfg.badgeBorder,
+    badgeText: isLightMode ? '#4f46e5' : baseCfg.badgeText,
+    isLight: isLightMode,
+  };
 
   useEffect(() => {
     const t = setInterval(() => setCursor(b => !b), 530);
@@ -472,12 +491,22 @@ export default function PortfolioRenderer({ portfolio }: { portfolio: Portfolio 
           style={{ background: cfg.isLight ? 'rgba(255,255,255,0.7)' : 'rgba(8,12,20,0.8)', border: cfg.isLight ? '1px solid rgba(0,0,0,0.06)' : '1px solid rgba(255,255,255,0.06)', backdropFilter: 'blur(12px)', color: cfg.isLight ? '#333' : '#94a3b8' }}>
           <Eye className="w-3 h-3" style={{ color: cfg.accent }} /> {portfolio.views || 0} views
         </motion.div>
-        <motion.button onClick={copyLink} initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] transition-colors"
-          style={{ background: cfg.isLight ? 'rgba(255,255,255,0.7)' : 'rgba(8,12,20,0.8)', border: cfg.isLight ? '1px solid rgba(0,0,0,0.06)' : '1px solid rgba(255,255,255,0.06)', backdropFilter: 'blur(12px)', color: cfg.isLight ? '#333' : '#94a3b8' }}>
-          {copied ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
-          {copied ? 'Copied!' : 'Share'}
-        </motion.button>
+        
+        <div className="flex items-center gap-3">
+          {/* Light/Dark Toggle */}
+          <motion.button onClick={() => setIsLightMode(!isLightMode)} initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.55 }}
+            className="flex items-center justify-center w-7 h-7 rounded-full transition-colors text-xs"
+            style={{ background: cfg.isLight ? 'rgba(0,0,0,0.04)' : 'rgba(255,255,255,0.08)', border: cfg.isLight ? '1px solid rgba(0,0,0,0.06)' : '1px solid rgba(255,255,255,0.06)', color: cfg.isLight ? '#333' : '#fff' }}>
+            {isLightMode ? '🌙' : '☀️'}
+          </motion.button>
+
+          <motion.button onClick={copyLink} initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[11px] transition-colors"
+            style={{ background: cfg.isLight ? 'rgba(255,255,255,0.7)' : 'rgba(8,12,20,0.8)', border: cfg.isLight ? '1px solid rgba(0,0,0,0.06)' : '1px solid rgba(255,255,255,0.06)', backdropFilter: 'blur(12px)', color: cfg.isLight ? '#333' : '#94a3b8' }}>
+            {copied ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+            {copied ? 'Copied!' : 'Share'}
+          </motion.button>
+        </div>
       </div>
 
       {/* ═══════════════ HERO SECTION ═══════════════ */}
