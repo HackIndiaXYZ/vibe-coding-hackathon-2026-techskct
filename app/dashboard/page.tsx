@@ -10,7 +10,7 @@ import {
   Zap, Plus, BarChart3, Globe, LogOut, Eye, Edit3,
   Trash2, ExternalLink, Upload, Loader2, TrendingUp,
   Sparkles, FileText, Settings, ChevronRight, MoreHorizontal,
-  Layout, Clock, Users, Star
+  Layout, Clock, Users, Star, Briefcase, QrCode, X
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
@@ -38,6 +38,7 @@ const NAV_ITEMS = [
   { icon: Layout,    label: 'Portfolios',  href: '/dashboard',          active: true },
   { icon: BarChart3, label: 'Analytics',   href: '/dashboard/analytics' },
   { icon: FileText,  label: 'ATS Checker', href: '/dashboard/ats'       },
+  { icon: Briefcase, label: 'Recruiter Hub', href: '/dashboard/recruiter' },
   { icon: Settings,  label: 'Settings',    href: '/dashboard/settings'  },
 ];
 
@@ -56,6 +57,7 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
+  const [qrUrl, setQrUrl] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClient();
 
@@ -319,6 +321,11 @@ export default function DashboardPage() {
                                     <ExternalLink className="w-3.5 h-3.5" />View Live
                                   </a>
                                 )}
+                                {portfolio.published && (
+                                  <button onClick={() => setQrUrl(window.location.origin + `/portfolio/${portfolio.slug}`)} className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-slate-300 hover:text-white hover:bg-white/5 transition-colors">
+                                    <QrCode className="w-3.5 h-3.5 text-indigo-400" />Share QR Code
+                                  </button>
+                                )}
                                 <div className="h-px bg-white/8 mx-2" />
                                 <button
                                   onClick={() => handleDelete(portfolio.id)}
@@ -391,6 +398,51 @@ export default function DashboardPage() {
           )}
         </div>
       </main>
+
+      {/* QR Code Share Modal */}
+      <AnimatePresence>
+        {qrUrl && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-sm bg-slate-900 border border-white/10 rounded-2xl p-6 shadow-2xl text-center relative"
+            >
+              <button
+                onClick={() => setQrUrl(null)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <h3 className="text-lg font-bold text-white mb-2">Share Portfolio QR</h3>
+              <p className="text-xs text-slate-400 mb-6">Scan this QR code with a mobile camera to view the live portfolio.</p>
+              
+              <div className="bg-white p-4 rounded-xl inline-block mb-6 shadow-inner border border-white/5">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(qrUrl)}`}
+                  alt="Portfolio QR Code"
+                  className="w-40 h-40"
+                />
+              </div>
+
+              <div className="flex gap-2 bg-slate-950 border border-white/5 p-2 rounded-xl text-xs text-slate-300 font-mono break-all justify-between items-center mb-4">
+                <span className="truncate max-w-[200px]">{qrUrl}</span>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(qrUrl);
+                    toast.success('Link copied to clipboard!');
+                  }}
+                  className="text-indigo-400 hover:text-indigo-300 shrink-0 font-sans font-semibold text-[10px] uppercase bg-indigo-500/10 px-2 py-1 rounded"
+                >
+                  Copy
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

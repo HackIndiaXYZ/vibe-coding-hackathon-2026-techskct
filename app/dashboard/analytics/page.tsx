@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
   ArrowLeft, BarChart3, Eye, TrendingUp, Globe,
-  Users, Zap, Monitor, Smartphone, Tablet, ExternalLink, Download
+  Users, Zap, Monitor, Smartphone, Tablet, ExternalLink, Download, Briefcase
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
@@ -52,6 +52,7 @@ function generateDailyData(total: number) {
 export default function DashboardAnalyticsPage() {
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [loading, setLoading] = useState(true);
+  const [recruiterClicks, setRecruiterClicks] = useState(0);
   const router = useRouter();
   const supabase = createClient();
 
@@ -61,6 +62,16 @@ export default function DashboardAnalyticsPage() {
       if (!user) { router.push('/login'); return; }
       const { data } = await supabase.from('portfolios').select('*').eq('user_id', user.id);
       setPortfolios(data || []);
+      
+      const portfolioIds = data ? data.map(p => p.id) : [];
+      if (portfolioIds.length > 0) {
+        const { data: clickEvents } = await supabase
+          .from('analytics_events')
+          .select('*')
+          .in('portfolio_id', portfolioIds)
+          .eq('event_type', 'recruiter_click');
+        setRecruiterClicks(clickEvents ? clickEvents.length : 0);
+      }
       setLoading(false);
     };
     load();
@@ -135,7 +146,7 @@ export default function DashboardAnalyticsPage() {
             { icon: Eye,        label: 'Total Views',       value: totalViews.toLocaleString(), delta: '+18%',  color: 'indigo' },
             { icon: Globe,      label: 'Published',         value: publishedCount,              delta: null,    color: 'emerald' },
             { icon: Users,      label: 'Unique Visitors',   value: Math.floor(totalViews * 0.7).toLocaleString(), delta: '+24%', color: 'cyan' },
-            { icon: TrendingUp, label: 'Avg. Session',      value: '1m 42s',                   delta: '+8s',   color: 'violet' },
+            { icon: Briefcase,  label: 'Recruiter Clicks',   value: recruiterClicks.toLocaleString(), delta: recruiterClicks > 0 ? '+12%' : null, color: 'violet' },
           ].map(stat => (
             <motion.div key={stat.label} variants={item} className="bento-card p-5">
               <div className={`icon-box icon-box-${stat.color} mb-3 w-9 h-9`}>
