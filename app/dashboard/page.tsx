@@ -10,7 +10,7 @@ import {
   Zap, Plus, BarChart3, Globe, LogOut, Eye, Edit3,
   Trash2, ExternalLink, Upload, Loader2, TrendingUp,
   Sparkles, FileText, Settings, ChevronRight, MoreHorizontal,
-  Layout, Clock, Users, Star, Briefcase, QrCode, X
+  Layout, Clock, Users, Star, Briefcase, QrCode, X, Mic
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
@@ -58,12 +58,26 @@ export default function DashboardPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState<string | null>(null);
   const [qrUrl, setQrUrl] = useState<string | null>(null);
+  const [activePortfolio, setActivePortfolio] = useState<Portfolio | null>(null);
+
+  // LinkedIn generate states
+  const [linkedinUrl, setLinkedinUrl] = useState('');
+  const [generatingLinkedIn, setGeneratingLinkedIn] = useState(false);
+  const [generationStep, setGenerationStep] = useState(0);
+
   const router = useRouter();
   const supabase = createClient();
 
+  const generationSteps = [
+    'Connecting to Profile...',
+    'Extracting experience & education...',
+    'Aligning professional theme...',
+    'Generating custom project descriptions...',
+    'Creating live portfolio...'
+  ];
+
   useEffect(() => {
     loadData();
-    // Close menu on outside click
     const fn = () => setMenuOpen(null);
     document.addEventListener('click', fn);
     return () => document.removeEventListener('click', fn);
@@ -74,7 +88,11 @@ export default function DashboardPage() {
     if (!user) { router.push('/login'); return; }
     setUser({ email: user.email!, name: user.user_metadata?.full_name || user.email!.split('@')[0] });
     const { data } = await supabase.from('portfolios').select('*').eq('user_id', user.id).order('updated_at', { ascending: false });
-    setPortfolios(data || []);
+    const list = data || [];
+    setPortfolios(list);
+    if (list.length > 0) {
+      setActivePortfolio(list[0]);
+    }
     setLoading(false);
   };
 
@@ -87,7 +105,11 @@ export default function DashboardPage() {
     if (!confirm('Delete this portfolio permanently?')) return;
     setDeletingId(id);
     await supabase.from('portfolios').delete().eq('id', id);
-    setPortfolios(prev => prev.filter(p => p.id !== id));
+    const updated = portfolios.filter(p => p.id !== id);
+    setPortfolios(updated);
+    if (activePortfolio?.id === id) {
+      setActivePortfolio(updated.length > 0 ? updated[0] : null);
+    }
     setDeletingId(null);
     toast.success('Portfolio deleted');
   };
@@ -95,13 +117,105 @@ export default function DashboardPage() {
   const togglePublish = async (portfolio: Portfolio) => {
     const { error } = await supabase.from('portfolios').update({ published: !portfolio.published }).eq('id', portfolio.id);
     if (!error) {
-      setPortfolios(prev => prev.map(p => p.id === portfolio.id ? { ...p, published: !p.published } : p));
+      const updated = portfolios.map(p => p.id === portfolio.id ? { ...p, published: !p.published } : p);
+      setPortfolios(updated);
+      if (activePortfolio?.id === portfolio.id) {
+        setActivePortfolio({ ...activePortfolio, published: !activePortfolio.published });
+      }
       toast.success(portfolio.published ? 'Unpublished' : '🚀 Portfolio is now live!');
     }
   };
 
-  const totalViews = portfolios.reduce((s, p) => s + (p.views || 0), 0);
-  const publishedCount = portfolios.filter(p => p.published).length;
+  const handleLinkedInGenerate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!linkedinUrl) {
+      toast.error('Please enter a valid LinkedIn URL');
+      return;
+    }
+    setGeneratingLinkedIn(true);
+    setGenerationStep(0);
+
+    const stepInterval = setInterval(() => {
+      setGenerationStep(prev => {
+        if (prev < generationSteps.length - 1) return prev + 1;
+        return prev;
+      });
+    }, 2500);
+
+    try {
+      const res = await fetch('/api/linkedin-generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: linkedinUrl, userId: (await supabase.auth.getUser()).data.user?.id })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to generate');
+
+      clearInterval(stepInterval);
+      toast.success('Portfolio generated from LinkedIn successfully!');
+      router.push(`/editor/${data.portfolioId}`);
+    } catch (err: any) {
+      clearInterval(stepInterval);
+      toast.error(err.message || 'Generation failed');
+    } finally {
+      setGeneratingLinkedIn(false);
+    }
+  };
+
+  // Static mock daily views data for chart representation (last 14 days)
+  const dailyViews = [24, 38, 28, 48, 42, 34, 58, 62, 52, 68, 74, 69, 78, 92];
+
+  const sidebarSections = [
+    {
+      title: 'PORTFOLIO',
+      items: [
+        { label: 'Dashboard', icon: Layout, href: '/dashboard', active: true },
+        { 
+          label: 'Editor', 
+          icon: Edit3, 
+          href: activePortfolio ? `/editor/${activePortfolio.id}` : '/upload' 
+        },
+        { label: 'Analytics', icon: BarChart3, href: '/dashboard/analytics' }
+      ]
+    },
+    {
+      title: 'AI TOOLS',
+      items: [
+        { label: 'Recruiter AI', icon: Users, href: '/dashboard/recruiter' },
+        { label: 'Voice Mode', icon: Mic, href: '/dashboard/voice' },
+        { label: 'AI Timeline', icon: Clock, href: '/dashboard/ats' }
+      ]
+    },
+    {
+      title: 'PUBLISH',
+      items: [
+        { 
+          label: 'Publish', 
+          icon: Globe, 
+          onClick: () => {
+            if (activePortfolio) {
+              togglePublish(activePortfolio);
+            } else {
+              toast.error('No active portfolio');
+            }
+          } 
+        },
+        { 
+          label: 'QR Card', 
+          icon: QrCode, 
+          onClick: () => {
+            if (activePortfolio && activePortfolio.published) {
+              setQrUrl(window.location.origin + `/portfolio/${activePortfolio.slug}`);
+            } else {
+              toast.error(activePortfolio ? 'Publish your portfolio to view QR Code' : 'No active portfolio');
+            }
+          }
+        },
+        { label: 'Settings', icon: Settings, href: '/dashboard/settings' }
+      ]
+    }
+  ];
 
   if (loading) {
     return (
@@ -133,34 +247,45 @@ export default function DashboardPage() {
           </Link>
         </div>
 
-        {/* Nav */}
-        <nav className="flex-1 px-3 py-4 space-y-0.5">
-          {NAV_ITEMS.map(item => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 ${
-                item.active
-                  ? 'bg-indigo-600/15 text-indigo-300 border border-indigo-500/25'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <item.icon className="w-4 h-4 shrink-0" />
-              {item.label}
-              {item.active && <ChevronRight className="w-3.5 h-3.5 ml-auto text-indigo-400" />}
-            </Link>
-          ))}
-        </nav>
+        {/* Sidebar Navigation Sections */}
+        <div className="flex-1 px-3 py-4 overflow-y-auto space-y-6">
+          {sidebarSections.map(section => (
+            <div key={section.title} className="space-y-1">
+              <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest px-3 mb-2">{section.title}</div>
+              <div className="space-y-0.5">
+                {section.items.map(item => {
+                  const content = (
+                    <>
+                      <item.icon className="w-4 h-4 shrink-0" />
+                      <span>{item.label}</span>
+                      {item.active && <ChevronRight className="w-3.5 h-3.5 ml-auto text-indigo-400" />}
+                    </>
+                  );
+                  const className = `w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-left ${
+                    item.active
+                      ? 'bg-indigo-600/15 text-indigo-300 border border-indigo-500/25'
+                      : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  }`;
 
-        {/* New portfolio button */}
-        <div className="px-3 pb-3">
-          <Link href="/upload" className="btn-primary w-full justify-center text-xs py-2.5">
-            <Plus className="w-3.5 h-3.5" />
-            New Portfolio
-          </Link>
+                  if (item.onClick) {
+                    return (
+                      <button key={item.label} onClick={item.onClick} className={className}>
+                        {content}
+                      </button>
+                    );
+                  }
+                  return (
+                    <Link key={item.label} href={item.href || '#'} className={className}>
+                      {content}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
 
-        {/* User */}
+        {/* User Card */}
         <div className="px-3 pb-4 border-t border-white/5 pt-3">
           <div className="flex items-center gap-2.5 px-2 py-2 rounded-xl hover:bg-white/5 transition-colors cursor-default">
             <div className="w-8 h-8 gradient-bg rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0">
@@ -183,24 +308,60 @@ export default function DashboardPage() {
         <div className="sticky top-0 z-30 glass-strong border-b border-white/5 h-14 flex items-center justify-between px-8">
           <div>
             <h1 className="text-[0.95rem] font-semibold text-white">
-              Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'},{' '}
-              <span className="gradient-text">{user?.name?.split(' ')[0]}</span> 👋
+              Welcome back, <span className="gradient-text">{user?.name?.split(' ')[0]}</span> 👋
             </h1>
           </div>
-          <Link href="/upload" className="btn-primary text-xs py-2">
-            <Plus className="w-3.5 h-3.5" />
-            New Portfolio
-          </Link>
+          <div className="flex gap-2">
+            <Link href="/upload" className="btn-secondary text-xs py-2 flex items-center gap-1.5">
+              <Upload className="w-3.5 h-3.5" /> Upload Resume
+            </Link>
+            <Link href="/upload" className="btn-primary text-xs py-2">
+              <Plus className="w-3.5 h-3.5" /> New Portfolio
+            </Link>
+          </div>
         </div>
 
         <div className="p-8">
-          {/* Stats row */}
+          {/* Active Portfolio Header details */}
+          {activePortfolio && (
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 p-6 glass rounded-2xl border border-white/5">
+              <div>
+                <h2 className="text-xl font-black text-white">{activePortfolio.title}</h2>
+                <p className="text-xs text-slate-400 mt-1 flex items-center gap-1.5">
+                  <span className={`w-2 h-2 rounded-full ${activePortfolio.published ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
+                  {activePortfolio.published ? 'Your portfolio is live' : 'Portfolio is in Draft mode'}
+                  <span className="text-slate-600">•</span>
+                  <span>Last updated <TimeAgo date={activePortfolio.updated_at} /></span>
+                </p>
+              </div>
+              <div className="flex gap-2">
+                {activePortfolio.published && (
+                  <a
+                    href={`/portfolio/${activePortfolio.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-xl text-xs font-semibold border border-white/10 flex items-center gap-1.5 transition-all"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" /> View Live
+                  </a>
+                )}
+                <Link
+                  href={`/editor/${activePortfolio.id}`}
+                  className="btn-primary text-xs px-4 py-2"
+                >
+                  <Edit3 className="w-3.5 h-3.5" /> Edit Portfolio
+                </Link>
+              </div>
+            </div>
+          )}
+
+          {/* Stats grid row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {[
-              { icon: FileText,   label: 'Total Portfolios', value: portfolios.length,              sub: 'All time',        color: 'indigo' },
-              { icon: Globe,      label: 'Published',         value: publishedCount,                 sub: `${portfolios.length - publishedCount} drafts`, color: 'emerald' },
-              { icon: Eye,        label: 'Total Views',       value: totalViews.toLocaleString(),    sub: 'Across all',      color: 'cyan' },
-              { icon: TrendingUp, label: 'Growth',            value: '+24%',                         sub: 'vs last month',   color: 'violet' },
+              { label: 'Total Views', value: activePortfolio ? (activePortfolio.views || 0).toLocaleString() : '0', sub: '↑ 127% this week', color: 'indigo' },
+              { label: 'Recruiter Score', value: activePortfolio ? '84' : '0', sub: 'Top 12% of profiles', color: 'emerald' },
+              { label: 'Avg Time on Page', value: activePortfolio ? '38m' : '0m', sub: '↑ 22% vs last week', color: 'cyan' },
+              { label: 'Voice Sessions', value: activePortfolio ? '6' : '0', sub: '3 recruiter visits', color: 'violet' },
             ].map((stat, i) => (
               <motion.div
                 key={stat.label}
@@ -209,191 +370,163 @@ export default function DashboardPage() {
                 transition={{ delay: i * 0.06, duration: 0.5 }}
                 className="bento-card p-5"
               >
-                <div className={`icon-box icon-box-${stat.color} mb-3`}>
-                  <stat.icon className={`w-4 h-4 text-${stat.color}-400`} />
-                </div>
                 <div className="text-2xl font-black text-white">{stat.value}</div>
-                <div className="text-xs font-medium text-slate-300 mt-0.5">{stat.label}</div>
-                <div className="text-[10px] text-slate-600 mt-0.5">{stat.sub}</div>
+                <div className="text-xs font-medium text-slate-300 mt-1">{stat.label}</div>
+                <div className={`text-[10px] mt-1 font-semibold ${
+                  stat.color === 'emerald' ? 'text-emerald-400' : 'text-indigo-400'
+                }`}>{stat.sub}</div>
               </motion.div>
             ))}
           </div>
 
-          {/* Section header */}
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <h2 className="text-lg font-bold text-white">Your Portfolios</h2>
-              <p className="text-xs text-slate-500 mt-0.5">{portfolios.length} portfolio{portfolios.length !== 1 ? 's' : ''}</p>
+          {/* Chart row & Details row */}
+          <div className="grid md:grid-cols-3 gap-6 mb-8">
+            {/* Daily Views Bar Chart */}
+            <div className="bento-card p-6 md:col-span-2">
+              <h3 className="font-bold text-white text-sm mb-6">Daily views — last 14 days</h3>
+              <div className="flex items-end justify-between h-40 pt-4 px-2">
+                {dailyViews.map((views, index) => (
+                  <div key={index} className="flex flex-col items-center flex-1 group">
+                    {/* Tooltip */}
+                    <div className="absolute mb-16 bg-slate-950 text-white text-[10px] px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                      {views} views
+                    </div>
+                    {/* Bar */}
+                    <motion.div
+                      initial={{ height: 0 }}
+                      animate={{ height: `${(views / 100) * 100}%` }}
+                      transition={{ duration: 0.8, delay: index * 0.03 }}
+                      className="w-4 sm:w-6 bg-indigo-600 hover:bg-indigo-400 rounded-t-md transition-colors"
+                    />
+                  </div>
+                ))}
+              </div>
+              <div className="flex justify-between text-[10px] text-slate-500 mt-4 px-1">
+                <span>14 days ago</span>
+                <span>Today</span>
+              </div>
+            </div>
+
+            {/* Sidebar column: URL & Status */}
+            <div className="flex flex-col gap-4">
+              {/* Portfolio URL Card */}
+              <div className="bento-card p-5 flex flex-col justify-between flex-1">
+                <div>
+                  <h4 className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">Portfolio URL</h4>
+                  <div className="text-sm font-mono text-indigo-400 break-all select-all">
+                    {activePortfolio 
+                      ? `${window.location.host}/portfolio/${activePortfolio.slug}`
+                      : 'Create a portfolio first'
+                    }
+                  </div>
+                </div>
+                {activePortfolio && (
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/portfolio/${activePortfolio.slug}`);
+                      toast.success('URL copied to clipboard!');
+                    }}
+                    className="btn-secondary text-[10px] py-1.5 mt-4 justify-center w-full"
+                  >
+                    Copy Link
+                  </button>
+                )}
+              </div>
+
+              {/* Status Card */}
+              <div className="bento-card p-5 flex items-center gap-4 border-l-2 border-emerald-500">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/25 flex items-center justify-center shrink-0">
+                  <Globe className="w-5 h-5 text-emerald-400" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-white">
+                    {activePortfolio?.published ? 'Published' : 'Draft Mode'}
+                  </h4>
+                  <p className="text-[10px] text-slate-500 mt-0.5">
+                    {activePortfolio?.published ? 'Live since 3 days ago' : 'Edit to publish your portfolio'}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Empty state */}
-          {portfolios.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.97 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="bento-card p-16 text-center"
-            >
-              <div className="w-20 h-20 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-6 glow-md">
-                <Sparkles className="w-10 h-10 text-white" />
+          {/* LinkedIn import Widget */}
+          <div className="bento-card p-7 mb-8 border border-indigo-500/15 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-8 opacity-10 pointer-events-none">
+              <Sparkles className="w-24 h-24 text-indigo-500" />
+            </div>
+
+            <h3 className="text-base font-black text-white mb-2 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-indigo-400" /> Import from LinkedIn
+            </h3>
+            <p className="text-xs text-slate-400 max-w-xl mb-6 leading-relaxed">
+              Generate a premium portfolio directly from your LinkedIn profile URL. Our AI extracts your experience, education, and skills to construct your site in under 60 seconds.
+            </p>
+
+            <form onSubmit={handleLinkedInGenerate} className="flex flex-col sm:flex-row gap-3">
+              <input
+                type="url"
+                value={linkedinUrl}
+                onChange={e => setLinkedinUrl(e.target.value)}
+                placeholder="https://www.linkedin.com/in/your-profile"
+                className="input-field flex-1 text-sm bg-slate-950/50 border border-white/10"
+                disabled={generatingLinkedIn}
+                required
+              />
+              <button
+                type="submit"
+                disabled={generatingLinkedIn}
+                className="btn-primary shrink-0 justify-center text-sm py-2 px-6"
+              >
+                {generatingLinkedIn ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" /> Generating…
+                  </>
+                ) : (
+                  'Generate Portfolio'
+                )}
+              </button>
+            </form>
+
+            {/* Simulated generation progress bar */}
+            {generatingLinkedIn && (
+              <div className="mt-5 space-y-2 max-w-xl">
+                <div className="flex justify-between text-[10px] font-semibold text-indigo-300">
+                  <span>{generationSteps[generationStep]}</span>
+                  <span>{Math.round(((generationStep + 1) / generationSteps.length) * 100)}%</span>
+                </div>
+                <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                  <motion.div
+                    initial={{ width: '0%' }}
+                    animate={{ width: `${((generationStep + 1) / generationSteps.length) * 100}%` }}
+                    transition={{ duration: 0.5 }}
+                    className="h-full bg-indigo-500"
+                  />
+                </div>
               </div>
-              <h3 className="text-2xl font-black text-white mb-3">Create your first portfolio</h3>
-              <p className="text-slate-400 max-w-md mx-auto mb-8 leading-relaxed">
-                Upload your resume and let AI transform it into a stunning portfolio website in under 60 seconds.
-              </p>
-              <Link href="/upload" className="btn-primary btn-lg glow-md">
-                <Upload className="w-5 h-5" />
-                Upload Resume & Get Started
-              </Link>
-            </motion.div>
-          ) : (
-            <div className="portfolio-grid">
-              {/* New portfolio card */}
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                <Link
-                  href="/upload"
-                  className="bento-card h-full min-h-52 flex flex-col items-center justify-center gap-3 text-slate-500 hover:text-indigo-300 hover:border-indigo-500/30 border-dashed transition-all duration-300 group cursor-pointer"
-                >
-                  <div className="w-12 h-12 rounded-xl border-2 border-dashed border-current flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <Plus className="w-5 h-5" />
-                  </div>
-                  <div className="text-center">
-                    <p className="font-semibold text-sm">New Portfolio</p>
-                    <p className="text-xs mt-1 text-slate-600">Upload a resume</p>
-                  </div>
-                </Link>
-              </motion.div>
+            )}
+          </div>
 
-              {/* Portfolio cards */}
-              <AnimatePresence>
-                {portfolios.map((portfolio, i) => {
-                  const theme = THEME_CONFIG[portfolio.theme] || THEME_CONFIG.developer;
-                  return (
-                    <motion.div
-                      key={portfolio.id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ delay: i * 0.05 }}
-                      className="bento-card group relative overflow-hidden"
-                    >
-                      {/* Theme banner */}
-                      <div className={`h-28 bg-gradient-to-br ${theme.from} ${theme.to} relative overflow-hidden flex items-end p-4`}>
-                        <div className="absolute inset-0 opacity-20 grid-pattern" />
-                        <span className="text-3xl relative z-10">{theme.icon}</span>
-                        {/* Status badge */}
-                        <div className="absolute top-3 right-3">
-                          {portfolio.published
-                            ? <span className="badge-live text-[10px]">Live</span>
-                            : <span className="badge badge-slate text-[10px]">Draft</span>
-                          }
-                        </div>
-                        {/* Menu button */}
-                        <div className="absolute top-3 left-3">
-                          <button
-                            onClick={e => { e.preventDefault(); e.stopPropagation(); setMenuOpen(menuOpen === portfolio.id ? null : portfolio.id); }}
-                            className="w-7 h-7 glass rounded-lg flex items-center justify-center text-slate-300 hover:text-white opacity-0 group-hover:opacity-100 transition-all"
-                          >
-                            <MoreHorizontal className="w-3.5 h-3.5" />
-                          </button>
-
-                          {/* Dropdown */}
-                          <AnimatePresence>
-                            {menuOpen === portfolio.id && (
-                              <motion.div
-                                initial={{ opacity: 0, scale: 0.95, y: -4 }}
-                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95 }}
-                                onClick={e => e.stopPropagation()}
-                                className="absolute left-0 top-9 w-44 glass-strong rounded-xl border border-white/10 overflow-hidden z-50 shadow-xl"
-                              >
-                                <Link href={`/editor/${portfolio.id}`} className="flex items-center gap-2.5 px-3 py-2.5 text-xs text-slate-300 hover:text-white hover:bg-white/5 transition-colors">
-                                  <Edit3 className="w-3.5 h-3.5" />Edit Portfolio
-                                </Link>
-                                <Link href={`/analytics/${portfolio.id}`} className="flex items-center gap-2.5 px-3 py-2.5 text-xs text-slate-300 hover:text-white hover:bg-white/5 transition-colors">
-                                  <BarChart3 className="w-3.5 h-3.5" />View Analytics
-                                </Link>
-                                <button onClick={() => togglePublish(portfolio)} className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-slate-300 hover:text-white hover:bg-white/5 transition-colors">
-                                  <Globe className="w-3.5 h-3.5" />{portfolio.published ? 'Unpublish' : 'Publish'}
-                                </button>
-                                {portfolio.published && (
-                                  <a href={`/portfolio/${portfolio.slug}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 px-3 py-2.5 text-xs text-slate-300 hover:text-white hover:bg-white/5 transition-colors">
-                                    <ExternalLink className="w-3.5 h-3.5" />View Live
-                                  </a>
-                                )}
-                                {portfolio.published && (
-                                  <button onClick={() => setQrUrl(window.location.origin + `/portfolio/${portfolio.slug}`)} className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-slate-300 hover:text-white hover:bg-white/5 transition-colors">
-                                    <QrCode className="w-3.5 h-3.5 text-indigo-400" />Share QR Code
-                                  </button>
-                                )}
-                                <div className="h-px bg-white/8 mx-2" />
-                                <button
-                                  onClick={() => handleDelete(portfolio.id)}
-                                  className="w-full flex items-center gap-2.5 px-3 py-2.5 text-xs text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors"
-                                  disabled={deletingId === portfolio.id}
-                                >
-                                  {deletingId === portfolio.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Trash2 className="w-3.5 h-3.5" />}
-                                  Delete
-                                </button>
-                              </motion.div>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      </div>
-
-                      {/* Content */}
-                      <Link href={`/editor/${portfolio.id}`} className="block p-5">
-                        <div className="flex items-start justify-between gap-2 mb-1">
-                          <h3 className="font-bold text-white text-sm truncate group-hover:gradient-text transition-all">
-                            {portfolio.title || 'Untitled Portfolio'}
-                          </h3>
-                        </div>
-                        <p className="text-xs text-slate-500 mb-4 capitalize">{theme.tag} theme</p>
-
-                        <div className="flex items-center gap-4 text-xs text-slate-500">
-                          <span className="flex items-center gap-1">
-                            <Eye className="w-3 h-3" />{portfolio.views || 0} views
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3" /><TimeAgo date={portfolio.updated_at} />
-                          </span>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="flex gap-2 mt-4 pt-4 border-t border-white/5">
-                          <button
-                            onClick={e => { e.preventDefault(); router.push(`/editor/${portfolio.id}`); }}
-                            className="btn-secondary flex-1 justify-center text-xs py-2"
-                          >
-                            <Edit3 className="w-3 h-3" />Edit
-                          </button>
-                          <button
-                            onClick={e => { e.preventDefault(); togglePublish(portfolio); }}
-                            className={`flex-1 flex items-center justify-center gap-1.5 text-xs py-2 rounded-lg font-semibold transition-all ${
-                              portfolio.published
-                                ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 hover:bg-emerald-500/20'
-                                : 'gradient-bg text-white hover:opacity-90'
-                            }`}
-                          >
-                            <Globe className="w-3 h-3" />
-                            {portfolio.published ? 'Live' : 'Publish'}
-                          </button>
-                          <button
-                            onClick={e => { e.preventDefault(); e.stopPropagation(); handleDelete(portfolio.id); }}
-                            disabled={deletingId === portfolio.id}
-                            title="Delete portfolio"
-                            className="w-9 h-8 flex items-center justify-center rounded-lg text-slate-600 hover:text-rose-400 hover:bg-rose-500/10 border border-white/5 hover:border-rose-500/20 transition-all shrink-0"
-                          >
-                            {deletingId === portfolio.id
-                              ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                              : <Trash2 className="w-3.5 h-3.5" />}
-                          </button>
-                        </div>
-                      </Link>
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
+          {/* List of other portfolios */}
+          {portfolios.length > 1 && (
+            <div className="mt-8">
+              <h3 className="text-sm font-bold text-white mb-4">Switch Portfolio Workspace</h3>
+              <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+                {portfolios.map(p => (
+                  <button
+                    key={p.id}
+                    onClick={() => setActivePortfolio(p)}
+                    className={`p-4 rounded-2xl text-left transition-all border ${
+                      activePortfolio?.id === p.id
+                        ? 'bg-indigo-600/10 border-indigo-500/40'
+                        : 'glass border-white/5 hover:border-white/15'
+                    }`}
+                  >
+                    <h4 className="text-xs font-bold text-white truncate">{p.title}</h4>
+                    <p className="text-[10px] text-slate-500 mt-1 capitalize">{p.theme} Theme</p>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>
@@ -434,7 +567,7 @@ export default function DashboardPage() {
                     navigator.clipboard.writeText(qrUrl);
                     toast.success('Link copied to clipboard!');
                   }}
-                  className="text-indigo-400 hover:text-indigo-300 shrink-0 font-sans font-semibold text-[10px] uppercase bg-indigo-500/10 px-2 py-1 rounded"
+                  className="text-indigo-400 hover:text-indigo-300 shrink-0 font-sans font-semibold text-[10px] uppercase bg-indigo-500/10 px-2 py-1.5 rounded"
                 >
                   Copy
                 </button>

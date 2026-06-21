@@ -11,17 +11,11 @@ import {
   Trash2, ExternalLink, Upload, Loader2, Sparkles,
   FileText, Settings, Layout, CheckCircle2, AlertTriangle,
   ArrowRight, Copy, Check, RefreshCw, Star, Info, Award,
-  Compass, BarChart, BookOpen, ChevronRight, HelpCircle
+  Compass, BarChart, BookOpen, ChevronRight, HelpCircle,
+  Users, Mic, QrCode, X, Clock
 } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
 import toast from 'react-hot-toast';
-
-const NAV_ITEMS = [
-  { icon: Layout,    label: 'Portfolios',  href: '/dashboard' },
-  { icon: BarChart3, label: 'Analytics',   href: '/dashboard/analytics' },
-  { icon: FileText,  label: 'ATS Checker', href: '/dashboard/ats', active: true },
-  { icon: Settings,  label: 'Settings',    href: '/dashboard/settings' },
-];
 
 const PREDEFINED_ROLES = [
   'Frontend Developer',
@@ -63,6 +57,7 @@ export default function AtsCheckerPage() {
   const [customRole, setCustomRole] = useState('');
 
   const [user, setUser] = useState<any>(null);
+  const [qrUrl, setQrUrl] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClient();
 
@@ -256,41 +251,122 @@ export default function AtsCheckerPage() {
   return (
     <div className="min-h-screen mesh-bg flex">
       {/* Sidebar */}
-      <aside className="w-64 border-r border-white/5 flex flex-col justify-between p-6 glass-strong shrink-0">
-        <div className="space-y-6">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 gradient-bg rounded-lg flex items-center justify-center shadow-md">
-              <Zap className="w-3.5 h-3.5 text-white" />
-            </div>
-            <span className="font-bold text-md"><span className="gradient-text">Folio</span><span className="text-white">AI</span></span>
-          </Link>
-
-          <nav className="space-y-1">
-            {NAV_ITEMS.map(item => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
-                  item.active
-                    ? 'bg-indigo-600/15 text-indigo-300 border border-indigo-500/25'
-                    : 'text-slate-400 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <item.icon className="w-4 h-4 shrink-0" />
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-        </div>
-
-        <div className="space-y-3">
-          <div className="p-3 bg-white/3 border border-white/5 rounded-xl text-[11px] text-slate-500">
-            <span className="text-slate-300 font-semibold block mb-0.5">Beta Version</span>
-            Let us know if you find any issues with parsing.
+      <aside className="w-60 border-r border-white/5 flex flex-col justify-between p-0 glass-strong shrink-0 z-40 h-screen sticky top-0">
+        <div className="flex flex-col h-full">
+          {/* Logo */}
+          <div className="h-14 flex items-center px-5 border-b border-white/5">
+            <Link href="/" className="flex items-center gap-2 group">
+              <div className="w-7 h-7 gradient-bg rounded-lg flex items-center justify-center group-hover:glow-xs transition-all">
+                <Zap className="w-3.5 h-3.5 text-white" />
+              </div>
+              <span className="font-bold text-[0.95rem]">
+                <span className="gradient-text">Folio</span><span className="text-white">AI</span>
+              </span>
+            </Link>
           </div>
-          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2 text-slate-500 hover:text-white text-sm transition-colors">
-            <LogOut className="w-4 h-4" /> Sign out
-          </button>
+
+          {/* Navigation Sections */}
+          <div className="flex-1 px-3 py-4 overflow-y-auto space-y-6">
+            {[
+              {
+                title: 'PORTFOLIO',
+                items: [
+                  { label: 'Dashboard', icon: Layout, href: '/dashboard' },
+                  { 
+                    label: 'Editor', 
+                    icon: Edit3, 
+                    href: activePortfolio ? `/editor/${activePortfolio.id}` : '/upload' 
+                  },
+                  { label: 'Analytics', icon: BarChart3, href: '/dashboard/analytics' }
+                ]
+              },
+              {
+                title: 'AI TOOLS',
+                items: [
+                  { label: 'Recruiter AI', icon: Users, href: '/dashboard/recruiter' },
+                  { label: 'Voice Mode', icon: Mic, href: '/dashboard/voice' },
+                  { label: 'AI Timeline', icon: Clock, href: '/dashboard/ats', active: true }
+                ]
+              },
+              {
+                title: 'PUBLISH',
+                items: [
+                  { 
+                    label: 'Publish', 
+                    icon: Globe, 
+                    onClick: () => {
+                      if (activePortfolio) {
+                        togglePublish(activePortfolio);
+                      } else {
+                        toast.error('No active portfolio');
+                      }
+                    } 
+                  },
+                  { 
+                    label: 'QR Card', 
+                    icon: QrCode, 
+                    onClick: () => {
+                      if (activePortfolio && activePortfolio.published) {
+                        setQrUrl(window.location.origin + `/portfolio/${activePortfolio.slug}`);
+                      } else {
+                        toast.error(activePortfolio ? 'Publish your portfolio to view QR Code' : 'No active portfolio');
+                      }
+                    }
+                  },
+                  { label: 'Settings', icon: Settings, href: '/dashboard/settings' }
+                ]
+              }
+            ].map(section => (
+              <div key={section.title} className="space-y-1">
+                <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-widest px-3 mb-2">{section.title}</div>
+                <div className="space-y-0.5">
+                  {section.items.map(item => {
+                    const content = (
+                      <>
+                        <item.icon className="w-4 h-4 shrink-0" />
+                        <span>{item.label}</span>
+                        {item.active && <ChevronRight className="w-3.5 h-3.5 ml-auto text-indigo-400" />}
+                      </>
+                    );
+                    const className = `w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 text-left ${
+                      item.active
+                        ? 'bg-indigo-600/15 text-indigo-300 border border-indigo-500/25'
+                        : 'text-slate-400 hover:text-white hover:bg-white/5'
+                    }`;
+
+                    if (item.onClick) {
+                      return (
+                        <button key={item.label} onClick={item.onClick} className={className}>
+                          {content}
+                        </button>
+                      );
+                    }
+                    return (
+                      <Link key={item.label} href={item.href || '#'} className={className}>
+                        {content}
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* User Card */}
+          <div className="px-3 pb-4 border-t border-white/5 pt-3">
+            <div className="flex items-center gap-2.5 px-2 py-2 rounded-xl hover:bg-white/5 transition-colors cursor-default">
+              <div className="w-8 h-8 gradient-bg rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0">
+                {user?.user_metadata?.full_name?.[0]?.toUpperCase() || user?.email?.[0]?.toUpperCase() || 'U'}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-xs font-semibold text-white truncate">{user?.user_metadata?.full_name || user?.email?.split('@')[0]}</p>
+                <p className="text-[10px] text-slate-500 truncate">{user?.email}</p>
+              </div>
+              <button onClick={handleLogout} className="text-slate-600 hover:text-rose-400 transition-colors shrink-0" title="Sign out">
+                <LogOut className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
         </div>
       </aside>
 
@@ -789,6 +865,51 @@ export default function AtsCheckerPage() {
           </linearGradient>
         </defs>
       </svg>
+
+      {/* QR Code Share Modal */}
+      <AnimatePresence>
+        {qrUrl && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="w-full max-w-sm bg-slate-900 border border-white/10 rounded-2xl p-6 shadow-2xl text-center relative"
+            >
+              <button
+                onClick={() => setQrUrl(null)}
+                className="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <h3 className="text-lg font-bold text-white mb-2">Share Portfolio QR</h3>
+              <p className="text-xs text-slate-400 mb-6">Scan this QR code with a mobile camera to view the live portfolio.</p>
+              
+              <div className="bg-white p-4 rounded-xl inline-block mb-6 shadow-inner border border-white/5">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=${encodeURIComponent(qrUrl)}`}
+                  alt="Portfolio QR Code"
+                  className="w-40 h-40"
+                />
+              </div>
+
+              <div className="flex gap-2 bg-slate-950 border border-white/5 p-2 rounded-xl text-xs text-slate-300 font-mono break-all justify-between items-center mb-4">
+                <span className="truncate max-w-[200px]">{qrUrl}</span>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(qrUrl);
+                    toast.success('Link copied to clipboard!');
+                  }}
+                  className="text-indigo-400 hover:text-indigo-300 shrink-0 font-sans font-semibold text-[10px] uppercase bg-indigo-500/10 px-2 py-1.5 -mx-1 rounded"
+                >
+                  Copy
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
